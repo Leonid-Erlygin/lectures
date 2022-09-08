@@ -2,3 +2,7 @@ torch
 torchsummary
 seaborn
 black[jupyter]
+opencv-python
+
+tensorflow-estimator==2.5.0
+tensorflow-gpu==2.5.0
