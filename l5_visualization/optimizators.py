@@ -9,6 +9,7 @@ import PIL.Image
 def generate_all_activations():
     pass
 
+
 class ActivationOptimizer(tf.Module):
     def __init__(
         self,
