@@ -1,0 +1,13 @@
+hydra:
+  run:
+    dir: ${exp_dir}
+exp_dir: outputs/${hydra.job.name}/${hydra.job.name}_${now:%Y-%m-%d_%H-%M-%S}
+
+model_path: /workspaces/lectures/outputs/cifar10_train/cifar10_train_2022-09-09_13-01-27
+
+n_images_per_filter: 3
+steps: 1000
+step_size: 0.01
+reg_coef: 0.01
+
+resize_image_to: [128, 128]
