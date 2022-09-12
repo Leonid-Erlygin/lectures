@@ -5,7 +5,9 @@ import tensorflow as tf
 import importlib
 import os
 import sys
-sys.path.append('/workspaces/lectures')
+
+sys.path.append("/workspaces/lectures")
+
 
 def get_class(module_name, class_name):
     module = importlib.import_module(module_name)
