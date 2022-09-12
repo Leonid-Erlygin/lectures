@@ -1,5 +1,4 @@
 torch
-torchsummary
 seaborn
 black[jupyter]
 opencv-python
