@@ -1,5 +1,5 @@
 # Note: You can use any Debian/Ubuntu based image you want. 
-FROM nvcr.io/nvidia/pytorch:21.06-py3
+FROM nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04
 
 
 # [Option] Install zsh
@@ -39,8 +39,8 @@ CMD [ "sleep", "infinity" ]
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends ffmpeg libsm6 libxext6
 
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+# COPY requirements.txt .
+# RUN pip3 install --no-cache-dir -r requirements.txt
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US \
