@@ -1,3 +1,5 @@
 **/__pycache__/**
 outputs
 l5_visualization/test
+.venv
+l5_visualization/datasets

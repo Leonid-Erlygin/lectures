@@ -40,4 +40,4 @@ CMD [ "sleep", "infinity" ]
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
 COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir --use-feature=2020-resolver -r requirements.txt
