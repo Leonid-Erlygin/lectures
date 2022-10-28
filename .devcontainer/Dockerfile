@@ -1,6 +1,6 @@
 # Note: You can use any Debian/Ubuntu based image you want. 
-FROM nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04
-
+#FROM mcr.microsoft.com/vscode/devcontainers/base:0-bullseye
+FROM nvcr.io/nvidia/pytorch:21.06-py3
 
 # [Option] Install zsh
 ARG INSTALL_ZSH="true"
@@ -36,13 +36,8 @@ ENTRYPOINT [ "/usr/local/share/docker-init.sh" ]
 CMD [ "sleep", "infinity" ]
 
 # [Optional] Uncomment this section to install additional OS packages.
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends ffmpeg libsm6 libxext6
+# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+#     && apt-get -y install --no-install-recommends <your-package-list-here>
 
-# COPY requirements.txt .
-# RUN pip3 install --no-cache-dir -r requirements.txt
-
-ENV LANG=en_US.UTF-8 \
-    LANGUAGE=en_US \
-    LC_ALL=en_US.UTF-8 \
-    PYTHONPATH=/workspaces/lectures/
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt

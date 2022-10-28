@@ -1,4 +1,6 @@
-jupyter-black
+torchsummary
+seaborn
+black[jupyter]
 opencv-python
 
 tensorflow-estimator==2.5.0
