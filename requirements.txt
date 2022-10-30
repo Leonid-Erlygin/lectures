@@ -1,4 +1,5 @@
 absl-py==1.3.0
+antlr4-python3-runtime==4.9.3
 asttokens==2.0.8
 astunparse==1.6.3
 backcall==0.2.0
@@ -22,8 +23,10 @@ google-auth-oauthlib==0.4.6
 google-pasta==0.2.0
 grpcio==1.50.0
 h5py==3.7.0
+hydra-core==1.2.0
 idna==3.4
 importlib-metadata==5.0.0
+importlib-resources==5.10.0
 ipykernel==6.16.2
 ipython==8.5.0
 ipywidgets==8.0.2
@@ -41,9 +44,10 @@ matplotlib==3.3.0
 matplotlib-inline==0.1.6
 mypy-extensions==0.4.3
 nest-asyncio==1.5.6
--e git+https://github.com/Leonid-Erlygin/lectures.git@122e7785d771872a377608ec5bbfa045d9021639#egg=nn_interpretability&subdirectory=l5_visualization/vis_tools/nn_interpretability
+-e git+https://github.com/Leonid-Erlygin/lectures.git@8ffc9ffa7ed9b5a5dad0610d171747d42db05605#egg=nn_interpretability&subdirectory=l5_visualization/vis_tools/nn_interpretability
 numpy==1.23.4
 oauthlib==3.2.2
+omegaconf==2.2.3
 opencv-python==4.6.0.66
 opt-einsum==3.3.0
 packaging==21.3
@@ -63,6 +67,7 @@ pyasn1-modules==0.2.8
 Pygments==2.13.0
 pyparsing==3.0.9
 python-dateutil==2.8.2
+PyYAML==6.0
 pyzmq==24.0.1
 requests==2.28.1
 requests-oauthlib==1.3.1
@@ -77,6 +82,7 @@ tensorflow-estimator==2.10.0
 tensorflow-gpu==2.10.0
 tensorflow-io-gcs-filesystem==0.27.0
 termcolor==2.0.1
+tokenize-rt==5.0.0
 tomli==2.0.1
 torch==1.12.1
 torchsummary==1.5.1
