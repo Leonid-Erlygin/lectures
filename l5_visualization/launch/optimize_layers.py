@@ -1,12 +1,12 @@
 import sys
 
-sys.path.append("/workspaces/lectures")
+sys.path.append("/home/devel/ws.leonid/lectures")
 
 import hydra
 from pathlib import Path
 import hydra
 from tensorflow import keras
-from l5_visualization.optimizators import ActivationOptimizer
+from l5_visualization.scripts.optimizators import ActivationOptimizer
 import cv2
 import numpy as np
 import tensorflow as tf
@@ -15,21 +15,25 @@ import tensorflow as tf
 @hydra.main(config_path="../configs/hydra", config_name=Path(__file__).stem + "_config")
 def run(cfg):
     model = keras.models.load_model(cfg.model_path)
-    # define optimizator
 
     out_dir = Path("layers_vis")
     print(f"saving visualization to {str(out_dir.absolute())}")
     for layer_name in cfg.layers_to_optimize:
         layer = model.get_layer(layer_name)
 
-        if "conv2d" not in layer.name:
-            continue
-
         for filter_index in range(layer.filters):
+            if cfg.optimize_center is False:
+                activation_index = (slice(None), slice(None), filter_index)
+            else:
+                activation_index = (
+                    layer.input.shape[1] // 2,
+                    layer.input.shape[1] // 2,
+                    filter_index,
+                )
             ao = ActivationOptimizer(
                 model=model,
                 layer_name=layer.name,
-                activation_index=(slice(None), slice(None), filter_index),
+                activation_index=activation_index,
                 steps=cfg.steps,
                 step_size=cfg.step_size,
                 reg_coef=cfg.reg_coef,
@@ -51,6 +55,7 @@ def run(cfg):
                 # resize
                 image = cv2.resize(image, cfg.resize_image_to)
 
+                # save
                 image_out_dir = out_dir / layer.name / f"filter_{filter_index}"
                 image_out_dir.mkdir(parents=True, exist_ok=True)
                 cv2.imwrite(
@@ -60,6 +65,4 @@ def run(cfg):
 
 
 if __name__ == "__main__":
-    # load model
-
     run()

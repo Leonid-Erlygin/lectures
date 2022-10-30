@@ -9,7 +9,7 @@ epochs: 20
 batch_size: 32
 
 model:
-  module_name: l5_visualization.models
+  module_name: l5_visualization.scripts.models
   class_name: simple_model
   args:
     input_shape: [32, 32, 3]

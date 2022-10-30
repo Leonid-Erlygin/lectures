@@ -3,13 +3,18 @@ hydra:
     dir: ${exp_dir}
 exp_dir: outputs/${hydra.job.name}/${hydra.job.name}_${now:%Y-%m-%d_%H-%M-%S}
 
-model_path: /workspaces/lectures/outputs/cifar10_train/cifar10_train_2022-09-09_13-01-27
+model_path: /home/devel/ws.leonid/lectures/l5_visualization/outputs/cifar10_train/cifar10_train_2022-10-30_15-23-17
 
 layers_to_optimize:
   - 'conv2d'
+  - 'conv2d_1'
+  - 'conv2d_2'
+  - 'conv2d_3'
+  - 'conv2d_4'
   - 'conv2d_5'
 
 
+optimize_center: True
 n_images_per_filter: 3
 steps: 300
 step_size: 0.01

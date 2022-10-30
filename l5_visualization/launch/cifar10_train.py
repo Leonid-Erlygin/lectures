@@ -6,7 +6,9 @@ import importlib
 import os
 import sys
 
-sys.path.append("/workspaces/lectures")
+import sys
+
+sys.path.append("/home/devel/ws.leonid/lectures")
 
 
 def get_class(module_name, class_name):

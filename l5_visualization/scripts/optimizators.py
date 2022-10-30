@@ -37,11 +37,7 @@ class ActivationOptimizer(tf.Module):
         ) - self.reg_coef * tf.image.total_variation(image)
 
     @tf.function(
-        input_signature=(
-            tf.TensorSpec(shape=[None, None, 3], dtype=tf.float32),
-            # tf.TensorSpec(shape=[], dtype=tf.int32),
-            # tf.TensorSpec(shape=[], dtype=tf.float32),
-        )
+        input_signature=(tf.TensorSpec(shape=[None, None, 3], dtype=tf.float32),)
     )
     def __call__(self, image):
         print("Tracing")
@@ -121,8 +117,8 @@ class DeepResp:
         steps_remaining = self.steps
         step = 0
         while steps_remaining:
-            if steps_remaining > 100:
-                run_steps = tf.constant(100)
+            if steps_remaining > 50:
+                run_steps = tf.constant(50)
             else:
                 run_steps = tf.constant(steps_remaining)
             steps_remaining -= run_steps
