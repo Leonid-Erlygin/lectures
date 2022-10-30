@@ -12,14 +12,13 @@ import numpy as np
 import tensorflow as tf
 
 
-
 @hydra.main(config_path="../configs/hydra", config_name=Path(__file__).stem + "_config")
 def run(cfg):
     model = keras.models.load_model(cfg.model_path)
     # define optimizator
 
     out_dir = Path("layers_vis")
-    print(f'saving visualization to {str(out_dir.absolute())}')
+    print(f"saving visualization to {str(out_dir.absolute())}")
     for layer_name in cfg.layers_to_optimize:
         layer = model.get_layer(layer_name)
 
@@ -55,8 +54,7 @@ def run(cfg):
                 image_out_dir = out_dir / layer.name / f"filter_{filter_index}"
                 image_out_dir.mkdir(parents=True, exist_ok=True)
                 cv2.imwrite(
-                    str(image_out_dir / f"sample_{i}")
-                    + ".png",
+                    str(image_out_dir / f"sample_{i}") + ".png",
                     cv2.cvtColor(image, cv2.COLOR_BGR2RGB),
                 )
 

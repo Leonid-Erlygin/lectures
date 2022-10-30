@@ -8,7 +8,10 @@ class ActivationMaximizationBase(ModelInterpreter):
     """
     Base class for Activation Maximization interpretability methods.
     """
-    def __init__(self, model: Module, classes: [str], preprocess: transforms.Compose, input_size):
+
+    def __init__(
+        self, model: Module, classes: [str], preprocess: transforms.Compose, input_size
+    ):
         """
         :param model: The model the decisions of which needs to be interpreted.
         :param classes: A collection of all classes that the given model can classify

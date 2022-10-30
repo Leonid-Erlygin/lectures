@@ -18,8 +18,15 @@ class GuidedBackprop(BackPropBase):
     https://arxiv.org/pdf/1412.6806.pdf
     """
 
-    def __init__(self, model: Module, classes: [str], preprocess: transforms.Compose,
-                 smooth=False, noise_level=0.2, number_samples=100):
+    def __init__(
+        self,
+        model: Module,
+        classes: [str],
+        preprocess: transforms.Compose,
+        smooth=False,
+        noise_level=0.2,
+        number_samples=100,
+    ):
         """
         :param model: The model the decisions of which needs to be interpreted.
         :param classes: A collection of all classes that the given model can classify.
@@ -34,7 +41,7 @@ class GuidedBackprop(BackPropBase):
         self.noise_level = noise_level
         self.number_samples = number_samples
 
-    def interpret(self, x, target_class = None):
+    def interpret(self, x, target_class=None):
         relu_map = []
         # Guided Backpropagation Rule
         for name, sequential_modules in self.model_guidedback.named_children():
@@ -52,13 +59,17 @@ class GuidedBackprop(BackPropBase):
 
         if not self.smooth:
             # Guided Backpropagation
-            self.gradient = self.generate_gradient(self.model_guidedback, x, target_class)
+            self.gradient = self.generate_gradient(
+                self.model_guidedback, x, target_class
+            )
         else:
             # Guided Backpropagation + SmoothGrad
             self.gradient = torch.zeros(x.size())
             for i in range(self.number_samples):
                 noise_img = add_noise(x, self.noise_level)
-                tmp_gradient = self.generate_gradient(self.model_guidedback, noise_img, target_class)
+                tmp_gradient = self.generate_gradient(
+                    self.model_guidedback, noise_img, target_class
+                )
                 self.gradient += tmp_gradient / self.number_samples
 
         return self.gradient
@@ -74,7 +85,7 @@ class GuidedBackprop(BackPropBase):
     def positive_gradients(self, a_map):
         def guidedbackprop_backward(module, grad_in, grad_out):
             activation = a_map.pop()
-            positive_grad = grad_out[0].clamp(min=0.)
+            positive_grad = grad_out[0].clamp(min=0.0)
             return (activation * positive_grad,)
 
         return guidedbackprop_backward

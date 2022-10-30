@@ -13,7 +13,14 @@ class DeconvolutionPartialReconstruction(DeconvolutionBase):
     a single filter in a layer of choice. The procedure is executed for every filter
     in the chosen layer.
     """
-    def __init__(self, model: Module, classes: [str], preprocess: transforms.Compose, layer_number):
+
+    def __init__(
+        self,
+        model: Module,
+        classes: [str],
+        preprocess: transforms.Compose,
+        layer_number,
+    ):
         """
         :param model: The model the decisions of which needs to be interpreted.
         :param classes: A collection of all classes that the given model can classify
@@ -45,15 +52,25 @@ class DeconvolutionPartialReconstruction(DeconvolutionBase):
 
         filters_count = self.layers[layer_index].weight.size()[0]
         for i in range(filters_count):
-            new_weights = torch.zeros(self.layers[layer_index].weight.size()).to(self.device)
+            new_weights = torch.zeros(self.layers[layer_index].weight.size()).to(
+                self.device
+            )
             new_weights[i] = self.layers[layer_index].weight[i].clone().to(self.device)
-            self.transposed_layers[len(self.transposed_layers) - layer_index - 1].weight = torch.nn.Parameter(new_weights).to(self.device)
+            self.transposed_layers[
+                len(self.transposed_layers) - layer_index - 1
+            ].weight = torch.nn.Parameter(new_weights).to(self.device)
 
-            y, max_pool_indices, prev_size, view_resize = self._execute_model_forward_pass(x)
-            y = self._execute_transposed_model_forward_pass(y, max_pool_indices, prev_size, view_resize)
+            (
+                y,
+                max_pool_indices,
+                prev_size,
+                view_resize,
+            ) = self._execute_model_forward_pass(x)
+            y = self._execute_transposed_model_forward_pass(
+                y, max_pool_indices, prev_size, view_resize
+            )
             y = y.detach().cpu()
             y = (y - y.min()) / (y.max() - y.min())
             results.append(y)
 
         return results
-

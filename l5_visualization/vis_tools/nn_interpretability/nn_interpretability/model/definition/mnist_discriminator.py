@@ -4,7 +4,7 @@ import torch.nn as nn
 class MNISTDiscriminator(nn.Module):
     def __init__(self):
         super(MNISTDiscriminator, self).__init__()
-        self.dense1 = nn.Linear(28*28, 128, True)
+        self.dense1 = nn.Linear(28 * 28, 128, True)
         self.dense2 = nn.Linear(128, 1, True)
 
     def forward(self, x):

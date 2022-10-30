@@ -14,8 +14,16 @@ class GradCAMInterpreter(CAMBase):
 
     https://arxiv.org/abs/1610.02391
     """
-    def __init__(self, model: Module, classes: List[str], preprocess: transforms.Compose, input_size,
-                 conv_layer_name, upsampling_mode="bilinear"):
+
+    def __init__(
+        self,
+        model: Module,
+        classes: List[str],
+        preprocess: transforms.Compose,
+        input_size,
+        conv_layer_name,
+        upsampling_mode="bilinear",
+    ):
         """
         :param model: The model the decisions of which needs to be interpreted.
         :param classes: A collection of all classes that the given model can classify
@@ -24,7 +32,15 @@ class GradCAMInterpreter(CAMBase):
         :param conv_layer_name: The name of the last conv layer
         :param upsampling_mode: The mode for the upsampling (e.g. linear, bicubic, bilinear)
         """
-        CAMBase.__init__(self, model, classes, preprocess, input_size, conv_layer_name, upsampling_mode)
+        CAMBase.__init__(
+            self,
+            model,
+            classes,
+            preprocess,
+            input_size,
+            conv_layer_name,
+            upsampling_mode,
+        )
 
         self.conv_layer.register_backward_hook(self._backward_hook)
 
@@ -48,7 +64,11 @@ class GradCAMInterpreter(CAMBase):
     def _execute_grad_cam(self):
         weights = F.adaptive_avg_pool2d(self.gradient, (1, 1)).to(self.device)
 
-        gcam = torch.mul(self.activation.to(self.device), weights).sum(dim=1, keepdim=True).to(self.device)
+        gcam = (
+            torch.mul(self.activation.to(self.device), weights)
+            .sum(dim=1, keepdim=True)
+            .to(self.device)
+        )
         gcam = F.relu(gcam).to(self.device)
         gcam = self._upsample(gcam).to(self.device)
         gcam = (gcam - gcam.min()) / (gcam.max() - gcam.min())

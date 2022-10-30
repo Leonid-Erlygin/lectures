@@ -16,9 +16,24 @@ class ActivationMaximizationCodespace(ActivationMaximizationBase):
 
     https://arxiv.org/abs/1706.07979
     """
-    def __init__(self, model: Module, classes: [str], preprocess: transforms.Compose, input_size,
-                 class_num, lr, reg_term, epochs, generator: Module, latent_dim, class_mean, verbose=False,
-                 threshold=0.99, is_dcgan=False):
+
+    def __init__(
+        self,
+        model: Module,
+        classes: [str],
+        preprocess: transforms.Compose,
+        input_size,
+        class_num,
+        lr,
+        reg_term,
+        epochs,
+        generator: Module,
+        latent_dim,
+        class_mean,
+        verbose=False,
+        threshold=0.99,
+        is_dcgan=False,
+    ):
         """
 
         :param model: The model the decisions of which needs to be interpreted.
@@ -36,7 +51,9 @@ class ActivationMaximizationCodespace(ActivationMaximizationBase):
         :param threshold: The threshold after which the optimization process should stop (e.g. 99.99%)
         :param is_dcgan: Flag is true if the generator is a DCGAN network.
         """
-        super(ActivationMaximizationCodespace, self).__init__(model, classes, preprocess, input_size)
+        super(ActivationMaximizationCodespace, self).__init__(
+            model, classes, preprocess, input_size
+        )
 
         self.class_num = class_num
         self.lr = lr
@@ -50,7 +67,9 @@ class ActivationMaximizationCodespace(ActivationMaximizationBase):
         self.is_dcgan = is_dcgan
 
     def interpret(self):
-        z = torch.autograd.Variable(torch.FloatTensor(np.random.normal(0, 1, (1, self.latent_dim))))
+        z = torch.autograd.Variable(
+            torch.FloatTensor(np.random.normal(0, 1, (1, self.latent_dim)))
+        )
         if self.is_dcgan:
             z = torch.randn(1, self.latent_dim, 1, 1)
 
@@ -73,18 +92,24 @@ class ActivationMaximizationCodespace(ActivationMaximizationBase):
             targets = torch.LongTensor([self.class_num]).to(self.device)
 
             loss_without_reg = criterion(scores, targets).to(self.device)
-            loss_reg = (torch.sqrt(((gen_img - self.class_mean)**2).sum()) * self.reg_term).to(self.device)
+            loss_reg = (
+                torch.sqrt(((gen_img - self.class_mean) ** 2).sum()) * self.reg_term
+            ).to(self.device)
             loss = loss_without_reg + loss_reg
 
             if probs[self.class_num] >= self.threshold:
                 if self.verbose:
-                    print(f'Class {self.class_num} | Epoch {epoch} | Loss {loss} | Probability {probs[self.class_num]}')
+                    print(
+                        f"Class {self.class_num} | Epoch {epoch} | Loss {loss} | Probability {probs[self.class_num]}"
+                    )
                 break
 
             loss.backward()
             optimizer.step()
 
             if self.verbose and epoch % 100 == 0:
-                print(f'Class {self.class_num} | Epoch {epoch} | Loss {loss} | Probability {probs[self.class_num]}')
+                print(
+                    f"Class {self.class_num} | Epoch {epoch} | Loss {loss} | Probability {probs[self.class_num]}"
+                )
 
         return gen_img.detach().cpu()

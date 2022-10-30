@@ -8,14 +8,19 @@ import numpy as np
 from torch.autograd import Variable
 import torch
 
-from misc_functions import (get_example_params,
-                            convert_to_grayscale,
-                            save_gradient_images)
+from misc_functions import (
+    get_example_params,
+    convert_to_grayscale,
+    save_gradient_images,
+)
 from vanilla_backprop import VanillaBackprop
+
 # from guided_backprop import GuidedBackprop  # To use with guided backprop
 
 
-def generate_smooth_grad(Backprop, prep_img, target_class, param_n, param_sigma_multiplier):
+def generate_smooth_grad(
+    Backprop, prep_img, target_class, param_n, param_sigma_multiplier
+):
     """
         Generates smooth gradients of given Backprop type. You can use this with both vanilla
         and guided backprop
@@ -45,11 +50,16 @@ def generate_smooth_grad(Backprop, prep_img, target_class, param_n, param_sigma_
     return smooth_grad
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Get params
     target_example = 0  # Snake
-    (original_image, prep_img, target_class, file_name_to_export, pretrained_model) =\
-        get_example_params(target_example)
+    (
+        original_image,
+        prep_img,
+        target_class,
+        file_name_to_export,
+        pretrained_model,
+    ) = get_example_params(target_example)
 
     VBP = VanillaBackprop(pretrained_model)
     # GBP = GuidedBackprop(pretrained_model)  # if you want to use GBP dont forget to
@@ -57,16 +67,16 @@ if __name__ == '__main__':
 
     param_n = 50
     param_sigma_multiplier = 4
-    smooth_grad = generate_smooth_grad(VBP,  # ^This parameter
-                                       prep_img,
-                                       target_class,
-                                       param_n,
-                                       param_sigma_multiplier)
+    smooth_grad = generate_smooth_grad(
+        VBP, prep_img, target_class, param_n, param_sigma_multiplier  # ^This parameter
+    )
 
     # Save colored gradients
-    save_gradient_images(smooth_grad, file_name_to_export + '_SmoothGrad_color')
+    save_gradient_images(smooth_grad, file_name_to_export + "_SmoothGrad_color")
     # Convert to grayscale
     grayscale_smooth_grad = convert_to_grayscale(smooth_grad)
     # Save grayscale gradients
-    save_gradient_images(grayscale_smooth_grad, file_name_to_export + '_SmoothGrad_gray')
-    print('Smooth grad completed')
+    save_gradient_images(
+        grayscale_smooth_grad, file_name_to_export + "_SmoothGrad_gray"
+    )
+    print("Smooth grad completed")

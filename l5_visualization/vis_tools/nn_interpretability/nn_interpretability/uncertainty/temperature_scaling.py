@@ -43,7 +43,9 @@ class TemperatureScaling(nn.Module):
 
     def forward(self, input):
         logits = self.model(input).to(self.device)
-        return logits / self.T.to(self.device).unsqueeze(1).expand(logits.size(0), logits.size(1))
+        return logits / self.T.to(self.device).unsqueeze(1).expand(
+            logits.size(0), logits.size(1)
+        )
 
     def set_temperature(self, dataset_loader):
         logits_list = []
@@ -64,9 +66,10 @@ class TemperatureScaling(nn.Module):
             optimizer.zero_grad()
             size = logits.shape
 
-            output = logits / self.T.to(self.device).unsqueeze(1).expand(size[0], size[1])
+            output = logits / self.T.to(self.device).unsqueeze(1).expand(
+                size[0], size[1]
+            )
             loss = criterion(output, labels).to(self.device)
 
             loss.backward()
             optimizer.step()
-

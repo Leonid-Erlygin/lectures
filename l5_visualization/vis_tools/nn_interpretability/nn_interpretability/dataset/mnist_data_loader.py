@@ -5,7 +5,7 @@ from scipy.ndimage.interpolation import rotate
 
 
 class MnistDataLoader:
-    def __init__(self, path: str = './data', batch_size: int = 64):
+    def __init__(self, path: str = "./data", batch_size: int = 64):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.transform = transforms.Compose(
             [
@@ -13,12 +13,20 @@ class MnistDataLoader:
             ]
         )
 
-        self.trainset = torchvision.datasets.MNIST(root=path, train=True, download=True, transform=self.transform)
-        self.trainloader = torch.utils.data.DataLoader(self.trainset, batch_size=batch_size, shuffle=True, num_workers=0)
+        self.trainset = torchvision.datasets.MNIST(
+            root=path, train=True, download=True, transform=self.transform
+        )
+        self.trainloader = torch.utils.data.DataLoader(
+            self.trainset, batch_size=batch_size, shuffle=True, num_workers=0
+        )
 
-        self.testset = torchvision.datasets.MNIST(root=path, train=False, download=True, transform=self.transform)
-        self.testloader = torch.utils.data.DataLoader(self.trainset, batch_size=batch_size, shuffle=True, num_workers=0)
-    
+        self.testset = torchvision.datasets.MNIST(
+            root=path, train=False, download=True, transform=self.transform
+        )
+        self.testloader = torch.utils.data.DataLoader(
+            self.trainset, batch_size=batch_size, shuffle=True, num_workers=0
+        )
+
     def get_images_for_class(self, num_class):
         return self.trainset.data[self.trainset.targets == num_class]
 
@@ -44,7 +52,9 @@ class MnistDataLoader:
             image_sum += image
 
         mean_image = (image_sum / len(images)).to(self.device)
-        mean_image = (mean_image - mean_image.min()) / (mean_image.max() - mean_image.min())
+        mean_image = (mean_image - mean_image.min()) / (
+            mean_image.max() - mean_image.min()
+        )
 
         return mean_image.to(self.device)
 
@@ -52,8 +62,10 @@ class MnistDataLoader:
         images = self.get_images_for_class(num_class)
 
         return self.generate_mean_image(images).to(self.device)
-    
+
     def rotate_image(self, num_class, deg):
         img = self.get_image_for_class(num_class).cpu()
-        rotated_img = rotate(img.squeeze(0).numpy().transpose(1,2,0), deg, reshape=False)
-        return torch.from_numpy(rotated_img).permute(2,0,1).unsqueeze_(0)
+        rotated_img = rotate(
+            img.squeeze(0).numpy().transpose(1, 2, 0), deg, reshape=False
+        )
+        return torch.from_numpy(rotated_img).permute(2, 0, 1).unsqueeze_(0)

@@ -14,8 +14,22 @@ class ActivationMaximization(ActivationMaximizationBase):
 
     https://arxiv.org/abs/1706.07979
     """
-    def __init__(self, model: Module, classes: [str], preprocess: transforms.Compose, input_size,
-                 start_img, class_num, lr, reg_term, class_mean, epochs, verbose=False, threshold=0.999):
+
+    def __init__(
+        self,
+        model: Module,
+        classes: [str],
+        preprocess: transforms.Compose,
+        input_size,
+        start_img,
+        class_num,
+        lr,
+        reg_term,
+        class_mean,
+        epochs,
+        verbose=False,
+        threshold=0.999,
+    ):
         """
         :param model: The model the decisions of which needs to be interpreted.
         :param classes: A collection of all classes that the given model can classify
@@ -30,7 +44,9 @@ class ActivationMaximization(ActivationMaximizationBase):
         :param verbose: Defines the verbosity of logging
         :param threshold: The threshold after which the optimization process should stop (e.g. 99.99%)
         """
-        ActivationMaximizationBase.__init__(self, model, classes, preprocess, input_size)
+        ActivationMaximizationBase.__init__(
+            self, model, classes, preprocess, input_size
+        )
 
         self.start_img = start_img.to(self.device)
         self.start_img = self._execute_preprocess(self.start_img)
@@ -56,19 +72,24 @@ class ActivationMaximization(ActivationMaximizationBase):
             probs = torch.nn.functional.softmax(scores, 1)[0]
             targets = torch.LongTensor([self.class_num]).to(self.device)
             loss = criterion(scores, targets).to(self.device)
-            loss_reg = (torch.sqrt(((gen_img - self.class_mean)**2).sum()) * self.reg_term).to(self.device)
+            loss_reg = (
+                torch.sqrt(((gen_img - self.class_mean) ** 2).sum()) * self.reg_term
+            ).to(self.device)
             loss = loss + loss_reg
 
             if probs[self.class_num] >= self.threshold:
                 if self.verbose:
-                    print(f'Class {self.class_num} | Epoch {epoch} | Loss {loss} | Probability {probs[self.class_num]}')
+                    print(
+                        f"Class {self.class_num} | Epoch {epoch} | Loss {loss} | Probability {probs[self.class_num]}"
+                    )
                 break
 
             if self.verbose and epoch % 100 == 0:
-                print(f'Class {self.class_num} | Epoch {epoch} | Loss {loss} | Probability {probs[self.class_num]}')
+                print(
+                    f"Class {self.class_num} | Epoch {epoch} | Loss {loss} | Probability {probs[self.class_num]}"
+                )
 
             loss.backward()
             optimizer.step()
 
         return gen_img.detach().cpu()
-

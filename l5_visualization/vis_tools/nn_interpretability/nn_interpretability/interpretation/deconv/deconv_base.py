@@ -2,7 +2,9 @@ import torch.nn as nn
 from torch.nn import Module
 from torchvision import transforms
 
-from nn_interpretability.interpretation.base.interpretation_base import DecisionInterpreter
+from nn_interpretability.interpretation.base.interpretation_base import (
+    DecisionInterpreter,
+)
 
 
 def transpose(layer):
@@ -16,14 +18,21 @@ def transpose(layer):
     elif isinstance(layer, nn.ReLU):
         transpose = nn.ReLU()
     elif isinstance(layer, nn.Conv2d):
-        transpose = nn.ConvTranspose2d(layer.out_channels, layer.in_channels, layer.kernel_size, layer.stride,
-                                       layer.padding)
+        transpose = nn.ConvTranspose2d(
+            layer.out_channels,
+            layer.in_channels,
+            layer.kernel_size,
+            layer.stride,
+            layer.padding,
+        )
         transpose.weight = nn.Parameter(layer.weight.detach().clone())
     elif isinstance(layer, nn.MaxPool2d):
         transpose = nn.MaxUnpool2d(layer.kernel_size)
     else:
         print(layer)
-        raise ValueError("The network have a layer type which is currently not supported.")
+        raise ValueError(
+            "The network have a layer type which is currently not supported."
+        )
 
     return transpose
 
@@ -70,11 +79,13 @@ class DeconvolutionBase(DecisionInterpreter):
             else:
                 x = layer.forward(x)
 
-            x =  x.to(self.device)
+            x = x.to(self.device)
 
         return x, max_pool_indices, prev_size, view_resize
 
-    def _execute_transposed_model_forward_pass(self, y, max_pool_indices, prev_size, view_resize):
+    def _execute_transposed_model_forward_pass(
+        self, y, max_pool_indices, prev_size, view_resize
+    ):
         for counter, transposed_layer in enumerate(self.transposed_layers):
             if isinstance(transposed_layer, nn.MaxUnpool2d):
                 idx = max_pool_indices.pop().to(self.device)

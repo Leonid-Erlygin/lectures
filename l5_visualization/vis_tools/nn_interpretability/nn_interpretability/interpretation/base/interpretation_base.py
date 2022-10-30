@@ -49,6 +49,7 @@ class ModelInterpreter(Interpreter):
     Implements an abstract ModelInterpreter which serves as a base
     for any model-based interpretation method.
     """
+
     def __init__(self, model: Module, classes: [str], preprocess: transforms.Compose):
         """
         :param model: The model the decisions of which needs to be interpreted.
@@ -69,6 +70,7 @@ class DecisionInterpreter(Interpreter):
     Implements an abstract DecisionInterpreter which serves as a base
     for any decision-based interpretation method.
     """
+
     def __init__(self, model: Module, classes: [str], preprocess: transforms.Compose):
         """
         :param model: The model the decisions of which needs to be interpreted.

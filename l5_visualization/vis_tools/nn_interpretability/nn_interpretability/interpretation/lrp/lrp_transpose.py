@@ -12,7 +12,14 @@ class LRPTranspose(LRPBase, DeconvolutionBase):
     """
     Implements LRP-0 by using Transposed layers.
     """
-    def __init__(self, model: Module, classes: [str], preprocess: transforms.Compose, visualize_layer=0):
+
+    def __init__(
+        self,
+        model: Module,
+        classes: [str],
+        preprocess: transforms.Compose,
+        visualize_layer=0,
+    ):
         """
         :param model: The model the decisions of which needs to be interpreted.
         :param classes: A collection of all classes that the given model can classify
@@ -42,7 +49,9 @@ class LRPTranspose(LRPBase, DeconvolutionBase):
                 last_activation = self.A.pop()
                 prev_size = last_activation.size()
                 view_resize = layer.weight.size()[1]
-                new_activation = last_activation.view(-1, layer.weight.size()[1]).to(self.device)
+                new_activation = last_activation.view(-1, layer.weight.size()[1]).to(
+                    self.device
+                )
                 self.A.append(new_activation)
                 should_rescale = False
 
@@ -93,7 +102,9 @@ class LRPTranspose(LRPBase, DeconvolutionBase):
 
         self._last_prediction = torch.argmax(self.A[-1]).to(self.device).item()
         first_relevance = torch.zeros(1, 10).to(self.device)
-        first_relevance[0][self._last_prediction] = self.A[-1].data[0][self._last_prediction]
+        first_relevance[0][self._last_prediction] = self.A[-1].data[0][
+            self._last_prediction
+        ]
         self.Relevance.append(first_relevance)
 
         self._execute_lrp_backward_pass(max_pool_indices, prev_size, view_resize)

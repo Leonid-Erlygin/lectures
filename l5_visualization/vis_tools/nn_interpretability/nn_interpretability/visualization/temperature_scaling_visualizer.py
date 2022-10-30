@@ -15,9 +15,9 @@ class TemperatureScalingVisualizer:
 
         TemperatureScalingVisualizer.bins(ax, data)
 
-        ax.set_xlabel('Confidence')
-        ax.set_ylabel('% of samples')
-        ax.set_title('Confidence Histograms')
+        ax.set_xlabel("Confidence")
+        ax.set_ylabel("% of samples")
+        ax.set_title("Confidence Histograms")
         fig.tight_layout()
 
     @staticmethod
@@ -26,9 +26,8 @@ class TemperatureScalingVisualizer:
 
         TemperatureScalingVisualizer.bins(ax, data)
 
-        ax.set_xlabel('Confidence')
-        ax.set_ylabel('Accuracy')
-        ax.set_title('Reliability diagram')
+        ax.set_xlabel("Confidence")
+        ax.set_ylabel("Accuracy")
+        ax.set_title("Reliability diagram")
 
         fig.tight_layout()
-

@@ -8,12 +8,16 @@ from nn_interpretability.model.definition.general_mnist_cnn import GeneralCNN
 from nn_interpretability.model.definition.mnist_generator import MNISTGenerator
 from nn_interpretability.model.definition.mnist_discriminator import MNISTDiscriminator
 from nn_interpretability.model.definition.cam_mnist_classifier import CAMMNISTClassifier
-from nn_interpretability.model.definition.pretrained_dc_generator import PretrainedDCGANGenerator
-from nn_interpretability.model.definition.cam_mnist_classifier_2 import CAMMNISTExtendedClassifier
+from nn_interpretability.model.definition.pretrained_dc_generator import (
+    PretrainedDCGANGenerator,
+)
+from nn_interpretability.model.definition.cam_mnist_classifier_2 import (
+    CAMMNISTExtendedClassifier,
+)
 
 
 class ModelRepository:
-    MODELS_PATH = str(Path(__file__).parent.parent.parent.joinpath('models')) + "/"
+    MODELS_PATH = str(Path(__file__).parent.parent.parent.joinpath("models")) + "/"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     @staticmethod
@@ -35,7 +39,7 @@ class ModelRepository:
                 model = ModelRepository._load(model, path)
 
         return model.to(ModelRepository.device)
-    
+
     @staticmethod
     def get_cam_classifier(path: str = None):
         model = CAMMNISTClassifier()
@@ -71,7 +75,7 @@ class ModelRepository:
         https://github.com/csinva/gan-vae-pretrained-pytorch
         :return:
         """
-        path = 'pretrained_dcgan_generator.pth'
+        path = "pretrained_dcgan_generator.pth"
 
         model = PretrainedDCGANGenerator()
         model = ModelRepository._load(model, path)
@@ -103,5 +107,10 @@ class ModelRepository:
 
     @staticmethod
     def _load(model, model_name):
-        model.load_state_dict(torch.load(ModelRepository.MODELS_PATH + model_name,  map_location=ModelRepository.device))
+        model.load_state_dict(
+            torch.load(
+                ModelRepository.MODELS_PATH + model_name,
+                map_location=ModelRepository.device,
+            )
+        )
         return model.to(ModelRepository.device)

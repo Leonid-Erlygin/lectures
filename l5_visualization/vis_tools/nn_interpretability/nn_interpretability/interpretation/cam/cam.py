@@ -14,8 +14,16 @@ class CAMInterpreter(CAMBase):
 
     http://cnnlocalization.csail.mit.edu/Zhou_Learning_Deep_Features_CVPR_2016_paper.pdf
     """
-    def __init__(self, model: Module, classes: [str], preprocess: transforms.Compose, input_size,
-                 conv_layer_name, upsampling_mode="bilinear"):
+
+    def __init__(
+        self,
+        model: Module,
+        classes: [str],
+        preprocess: transforms.Compose,
+        input_size,
+        conv_layer_name,
+        upsampling_mode="bilinear",
+    ):
         """
         :param model: The model the decisions of which needs to be interpreted.
         :param classes: A collection of all classes that the given model can classify
@@ -24,9 +32,19 @@ class CAMInterpreter(CAMBase):
         :param conv_layer_name: The name of the last conv layer
         :param upsampling_mode: The mode for the upsampling (e.g. linear, bicubic, bilinear)
         """
-        CAMBase.__init__(self, model, classes, preprocess, input_size, conv_layer_name, upsampling_mode)
+        CAMBase.__init__(
+            self,
+            model,
+            classes,
+            preprocess,
+            input_size,
+            conv_layer_name,
+            upsampling_mode,
+        )
 
-        self.classification_weights = np.squeeze(list(self.model.parameters())[-2].data.cpu().numpy())
+        self.classification_weights = np.squeeze(
+            list(self.model.parameters())[-2].data.cpu().numpy()
+        )
 
     def interpret(self, x):
         x = self._execute_preprocess(x)
@@ -41,7 +59,11 @@ class CAMInterpreter(CAMBase):
     def _execute_cam(self, class_index: int):
         bz, nc, h, w = self.activation.cpu().numpy().shape
 
-        cam = np.einsum("i,ikm->km", self.classification_weights[class_index], self.activation.cpu().reshape((nc, h, w)))
+        cam = np.einsum(
+            "i,ikm->km",
+            self.classification_weights[class_index],
+            self.activation.cpu().reshape((nc, h, w)),
+        )
         cam = cam.reshape(1, 1, h, w)
         cam = cam - cam.min()
         cam = cam / cam.max()

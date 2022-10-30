@@ -5,22 +5,23 @@ import torch.nn.functional as F
 
 class MC_Dropout:
     """
-    MC dropout from the paper "Dropout as a Bayesian Approximation: 
+    MC dropout from the paper "Dropout as a Bayesian Approximation:
     Representing Model Uncertainty in Deep Learning"
-    
+
     https://arxiv.org/pdf/1506.02142.pdf
-    """        
+    """
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        
+
     @staticmethod
     def mc_dropout_validate(model, criterion, testloader, T=100):
         """
         Validate on the whole test dataset
-        """        
+        """
         model.train()
-        loss = 0.
-        accuracy =0.
-        total = 0.
+        loss = 0.0
+        accuracy = 0.0
+        total = 0.0
         with torch.no_grad():
             for i, data in enumerate(testloader):
                 inputs, labels = data
@@ -35,23 +36,26 @@ class MC_Dropout:
                 accuracy += (labels == predicted).sum().item()
                 total += labels.size()[0]
 
-        print('{} Stochastic forward passes. Average MC Dropout Test loss: {:.3f}. MC Dropout Accuracy: {:.2f}%'.format(T,
-            (loss / len(testloader)), (100 * accuracy / total)))       
+        print(
+            "{} Stochastic forward passes. Average MC Dropout Test loss: {:.3f}. MC Dropout Accuracy: {:.2f}%".format(
+                T, (loss / len(testloader)), (100 * accuracy / total)
+            )
+        )
 
     @staticmethod
     def predict_class(model, images, top_k):
         """
         Output the top k classes and their corresponding probability
-        """        
+        """
         model.eval()
         with torch.no_grad():
             images = images.to(MC_Dropout.device)
             outputs = model(images)
             prob = F.softmax(outputs, dim=1)
-            score, predicted= torch.topk(prob, top_k, dim=1)
+            score, predicted = torch.topk(prob, top_k, dim=1)
 
         return score, predicted
-        
+
     @staticmethod
     def mc_dropout_predict(model, images, T=10):
         """

@@ -14,6 +14,7 @@ class Deconvolution(DeconvolutionBase):
 
     https://arxiv.org/pdf/1311.2901.pdf
     """
+
     def __init__(self, model: Module, classes: [str], preprocess: transforms.Compose):
         """
         :param model: The model the decisions of which needs to be interpreted.
@@ -25,10 +26,13 @@ class Deconvolution(DeconvolutionBase):
     def interpret(self, x):
         x = self._execute_preprocess(x)
 
-        y, max_pool_indices, prev_size, view_resize = self._execute_model_forward_pass(x)
-        y = self._execute_transposed_model_forward_pass(y, max_pool_indices, prev_size, view_resize)
+        y, max_pool_indices, prev_size, view_resize = self._execute_model_forward_pass(
+            x
+        )
+        y = self._execute_transposed_model_forward_pass(
+            y, max_pool_indices, prev_size, view_resize
+        )
         y = y.detach().cpu()
         y = (y - y.min()) / (y.max() - y.min())
 
         return y
-

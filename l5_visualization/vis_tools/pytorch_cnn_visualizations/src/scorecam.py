@@ -11,17 +11,18 @@ import torch.nn.functional as F
 from misc_functions import get_example_params, save_class_activation_images
 
 
-class CamExtractor():
+class CamExtractor:
     """
-        Extracts cam features from the model
+    Extracts cam features from the model
     """
+
     def __init__(self, model, target_layer):
         self.model = model
         self.target_layer = target_layer
 
     def forward_pass_on_convolutions(self, x):
         """
-            Does a forward pass on convolutions, hooks the function at given layer
+        Does a forward pass on convolutions, hooks the function at given layer
         """
         conv_output = None
         for module_pos, module in self.model.features._modules.items():
@@ -32,7 +33,7 @@ class CamExtractor():
 
     def forward_pass(self, x):
         """
-            Does a full forward pass on the model
+        Does a full forward pass on the model
         """
         # Forward pass on the convolutions
         conv_output, x = self.forward_pass_on_convolutions(x)
@@ -42,10 +43,11 @@ class CamExtractor():
         return conv_output, x
 
 
-class ScoreCam():
+class ScoreCam:
     """
-        Produces class activation map
+    Produces class activation map
     """
+
     def __init__(self, model, target_layer):
         self.model = model
         self.model.eval()
@@ -66,33 +68,50 @@ class ScoreCam():
         # Multiply each weight with its conv output and then, sum
         for i in range(len(target)):
             # Unsqueeze to 4D
-            saliency_map = torch.unsqueeze(torch.unsqueeze(target[i, :, :],0),0)
+            saliency_map = torch.unsqueeze(torch.unsqueeze(target[i, :, :], 0), 0)
             # Upsampling to input size
-            saliency_map = F.interpolate(saliency_map, size=(224, 224), mode='bilinear', align_corners=False)
+            saliency_map = F.interpolate(
+                saliency_map, size=(224, 224), mode="bilinear", align_corners=False
+            )
             if saliency_map.max() == saliency_map.min():
                 continue
             # Scale between 0-1
-            norm_saliency_map = (saliency_map - saliency_map.min()) / (saliency_map.max() - saliency_map.min())
+            norm_saliency_map = (saliency_map - saliency_map.min()) / (
+                saliency_map.max() - saliency_map.min()
+            )
             # Get the target score
-            w = F.softmax(self.extractor.forward_pass(input_image*norm_saliency_map)[1],dim=1)[0][target_class]
+            w = F.softmax(
+                self.extractor.forward_pass(input_image * norm_saliency_map)[1], dim=1
+            )[0][target_class]
             cam += w.data.numpy() * target[i, :, :].data.numpy()
         cam = np.maximum(cam, 0)
         cam = (cam - np.min(cam)) / (np.max(cam) - np.min(cam))  # Normalize between 0-1
         cam = np.uint8(cam * 255)  # Scale between 0-255 to visualize
-        cam = np.uint8(Image.fromarray(cam).resize((input_image.shape[2],
-                       input_image.shape[3]), Image.ANTIALIAS))/255
+        cam = (
+            np.uint8(
+                Image.fromarray(cam).resize(
+                    (input_image.shape[2], input_image.shape[3]), Image.ANTIALIAS
+                )
+            )
+            / 255
+        )
         return cam
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Get params
     target_example = 0  # Snake
-    (original_image, prep_img, target_class, file_name_to_export, pretrained_model) =\
-        get_example_params(target_example)
+    (
+        original_image,
+        prep_img,
+        target_class,
+        file_name_to_export,
+        pretrained_model,
+    ) = get_example_params(target_example)
     # Score cam
     score_cam = ScoreCam(pretrained_model, target_layer=11)
     # Generate cam mask
     cam = score_cam.generate_cam(prep_img, target_class)
     # Save mask
     save_class_activation_images(original_image, cam, file_name_to_export)
-    print('Score cam completed')
+    print("Score cam completed")
