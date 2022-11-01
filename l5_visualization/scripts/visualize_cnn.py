@@ -1,7 +1,7 @@
 import sys
 
 sys.path.append(
-    "/home/devel/ws.leonid/lectures/l5_visualization/vis_tools/pytorch_cnn_visualizations/src"
+    "../../../lectures/l5_visualization/vis_tools/pytorch_cnn_visualizations/src"
 )
 
 
@@ -52,6 +52,7 @@ def get_explanations(
     save_path: Path,
 ):
 
+    INTEGRATED_GRAD_STEPS = 10
     image_shape = image_unchanged.size
 
     num_row = 5
@@ -109,7 +110,7 @@ def get_explanations(
 
     # Integrated Gradients
     baseline = torch.zeros_like(image_transformed)
-    interpretor = IntegratedGrad(model, [], None, baseline, steps=20)
+    interpretor = IntegratedGrad(model, [], None, baseline, steps=INTEGRATED_GRAD_STEPS)
     endpoint = interpretor.interpret(image_transformed)
     gray = convert_to_grayscale(endpoint.detach().numpy()[0])
     gray = gray - gray.min()

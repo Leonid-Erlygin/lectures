@@ -3,7 +3,7 @@ hydra:
     dir: ${exp_dir}
 exp_dir: outputs/${hydra.job.name}/${hydra.job.name}_${now:%Y-%m-%d_%H-%M-%S}
 
-model_path: /home/devel/ws.leonid/lectures/l5_visualization/outputs/cifar10_train/cifar10_train_2022-10-30_15-23-17
+model_path: /home/devel/ws.leonid/portability_test/lectures/l5_visualization/outputs/cifar10_train/cifar10_train_2022-11-01_09-29-31
 
 layers_to_optimize:
   - 'conv2d'

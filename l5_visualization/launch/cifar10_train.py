@@ -8,7 +8,16 @@ import sys
 
 import sys
 
-sys.path.append("/home/devel/ws.leonid/lectures")
+sys.path.append("../../../lectures")
+
+# --------------------------------------------------------------------------------- #
+#          Script for simple cnn cifar10 train                                      #
+#          main config: l5_visualization/configs/hydra/cifar10_train_config.yaml    #
+#          usage: > cd l5_visualization                                             #
+#                 > python launch/cifar10_train.py                                  #
+#                                                                                   #
+#          trained model will be saved in  l5_visualization/outputs/cifar10_train   #
+# --------------------------------------------------------------------------------- #
 
 
 def get_class(module_name, class_name):

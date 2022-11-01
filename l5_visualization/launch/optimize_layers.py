@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append("/home/devel/ws.leonid/lectures")
+sys.path.append("../../../lectures")
 
 import hydra
 from pathlib import Path
@@ -10,6 +10,15 @@ from l5_visualization.scripts.optimizators import ActivationOptimizer
 import cv2
 import numpy as np
 import tensorflow as tf
+
+# --------------------------------------------------------------------------------- #
+#          Script for layer visualization                                           #
+#          main config: l5_visualization/configs/hydra/optimize_layers_config.yaml  #
+#          usage: > cd l5_visualization                                             #
+#                 > python launch/optimize_layers.py                                #
+#                                                                                   #
+#          visualizations will be saved in l5_visualization/outputs/optimize_layers#
+# --------------------------------------------------------------------------------- #
 
 
 @hydra.main(config_path="../configs/hydra", config_name=Path(__file__).stem + "_config")
