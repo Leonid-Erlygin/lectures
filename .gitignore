@@ -2,5 +2,6 @@
 outputs
 l5_visualization/test
 .venv
+.vscode
 l5_visualization/datasets
 l5_visualization/data
